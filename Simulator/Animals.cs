@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Simulator;
 
@@ -12,32 +7,13 @@ public class Animals
     private string description = "Unknown";
     public required string Description
     {
-        get { return description; }
-        init
-        {
-            description = value.Trim();
-            if (description.Length > 15)
-            {
-                description = description.Substring(0, 15).Trim();
-            }
-            if (description.Length < 3)
-            {
-                int missing = 3 - description.Length;
-                string hash = String.Concat(Enumerable.Repeat("#", missing));
-                description = $"{description}{hash}";
-            }
-            if (char.IsLower(description[0]))
-            {
-                description = char.ToUpper(description[0]) + description.Substring(1);
-            }
-        }
+        get => description;
+        init => description = Validator.Shortener(value, 3, 15);
     }
-
-    private uint size = 3;
-    public uint Size { get; set; }
-
-    public string Info
+    public virtual string Info => $"{Description} <{Size}>";
+    public override string ToString()
     {
-        get { return $"{Description} <{Size}>"; }
+        return $"{GetType().Name.ToUpper()}: {Info}";
     }
+    public uint Size { get; set; } = 3;
 }

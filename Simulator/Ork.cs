@@ -1,61 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Simulator;
 
 public class Orc : Creature
 {
-    private int huntCount = 0;
+    private int _rage = 0;
+    private int HuntCount = 0;
 
-    public override int Power
-    {
-        get { return (7 * Level + 3 * Rage); }
-    }
-
-    private int rage;
     public int Rage
     {
-        get { return rage; }
-        init
-        {
-            if (value < 1)
-            {
-                rage = 1;
-            }
-            else if (value > 10)
-            {
-                rage = 10;
-            }
-            else
-            {
-                rage = value;
-            }
-        }
+        get => _rage;
+        init => _rage = Validator.Limiter(value, 0, 10);
     }
 
-    public Orc(string name, int level = 1, int rage = 1) : base(name, level)
+    public Orc(string name = "Unknown Orc", int level = 1, int rage = 1) : base(name, level)
     {
-        Rage = rage;
+        _rage = Validator.Limiter(rage, 0, 10);
     }
-    public Orc() { }
+
+    public override int Power => 7 * Level + 3 * Rage;
 
     public void Hunt()
     {
-        huntCount++;
-        if (huntCount % 2 == 0)
+        HuntCount++;
+        if (HuntCount % 3 == 0)
         {
-            if (rage < 10)
+            if (_rage < 10)
             {
-                rage++;
+                _rage++;
             }
         }
-        Console.WriteLine($"{Name} is hunting.");
     }
-    public override void SayHi() => Console.WriteLine(
-    $"Hi, I'm {Name}, my level is {Level}, my rage is {Rage}."
-);
+    public override string Info => $"{Name} [{Level}][{Rage}]";
 
+    public override void SayHi() => Console.WriteLine($"Hi, I'm {Name}, my level is {Level}, my rage is {Rage}.");
 }

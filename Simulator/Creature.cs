@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Simulator;
 
@@ -14,73 +7,44 @@ public abstract class Creature
     private string name = "Unknown";
     public string Name
     {
-        get { return name; }
-        init
-        {
-            name = value.Trim();
-            if (name.Length > 25)
-            {
-                name = name.Substring(0, 25).Trim();
-            }
-            if (name.Length < 3)
-            {
-                int missing = 3 - name.Length;
-                string hash = String.Concat(Enumerable.Repeat("#", missing));
-                name = $"{name}{hash}";
-            }
-            if (char.IsLower(name[0]))
-            {
-                name = char.ToUpper(name[0]) + name.Substring(1);
-            }
-
-        }
+        get => name;
+        init => name = Validator.Shortener(value, 3, 25);
     }
 
     private int level = 1;
     public int Level
     {
-        get { return level; }
-        set
-        {
-            if (level == 1)
-            {
-                if (value < 1)
-                {
-                    level = 1;
-                }
-                else if (value > 10)
-                {
-                    level = 10;
-                }
-                else
-                {
-                    level = value;
-                }
-            }
-        }
+        get => level;
+        private set => level = Validator.Limiter(value, 1, 10);
     }
 
-    public abstract int Power { get; }
-
-    public Creature(string name = "Unknown", int level = 1)
+    public Creature(string name, int level = 1)
     {
         Name = name;
         Level = level;
     }
-    public Creature()
-    {
 
-    }
+    public Creature() { }
     public abstract void SayHi();
+    public abstract int Power { get; }
+
+    public void Upgrade()
+    {
+        Level = Validator.Limiter(level + 1, 1, 10);
+    }
+
+    public abstract string Info { get; }
+    public override string ToString() => $"{GetType().Name.ToUpper()}: {Info}";
+
 
     public void Go(Direction direction)
     {
-        string dir = direction.ToString();
-        Console.WriteLine($"{Name} goes {char.ToLower(dir[0]) + dir.Substring(1)}.");
+        Console.WriteLine($"{name} goes {direction.ToString().ToLower()}.");
     }
+
     public void Go(Direction[] directions)
     {
-        foreach (Direction direction in directions)
+        foreach (var direction in directions)
         {
             Go(direction);
         }
@@ -88,18 +52,7 @@ public abstract class Creature
 
     public void Go(string directions)
     {
-        Go(DirectionParser.Parse(directions));
-    }
-
-    public void Upgrade()
-    {
-        if (Level < 10)
-        {
-            level++;
-        }
-    }
-    public string Info
-    {
-        get { return $"{Name} [{Level}]"; }
+        var parsedDirections = DirectionParser.Parse(directions);
+        Go(parsedDirections);
     }
 }
