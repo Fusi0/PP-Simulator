@@ -1,56 +1,77 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Simulator;
 
-public class Creature
+public abstract class Creature
 {
     private string name = "Unknown";
     public string Name
     {
-        get => name;
+        get { return name; }
         init
         {
             name = value.Trim();
             if (name.Length > 25)
             {
-                name = name[..25].Trim();
+                name = name.Substring(0, 25).Trim();
             }
             if (name.Length < 3)
             {
-                name = name.PadRight(3, '#');
+                int missing = 3 - name.Length;
+                string hash = String.Concat(Enumerable.Repeat("#", missing));
+                name = $"{name}{hash}";
             }
             if (char.IsLower(name[0]))
             {
-                name = char.ToUpper(name[0]) + name[1..];
+                name = char.ToUpper(name[0]) + name.Substring(1);
             }
+
         }
     }
 
     private int level = 1;
     public int Level
     {
-        get => level;
+        get { return level; }
         set
         {
             if (level == 1)
             {
-                level = value < 1 ? 1 : value > 10 ? 10 : value;
+                if (value < 1)
+                {
+                    level = 1;
+                }
+                else if (value > 10)
+                {
+                    level = 10;
+                }
+                else
+                {
+                    level = value;
+                }
             }
         }
     }
+
+    public abstract int Power { get; }
 
     public Creature(string name = "Unknown", int level = 1)
     {
         Name = name;
         Level = level;
     }
-
-    public Creature() { }
-
-    public void SayHi()
+    public Creature()
     {
-        Console.WriteLine($"Hi, I'm {Name}, my level is {Level}.");
+
     }
+    public abstract void SayHi();
 
     public void Go(Direction direction)
     {
@@ -64,6 +85,7 @@ public class Creature
             Go(direction);
         }
     }
+
     public void Go(string directions)
     {
         Go(DirectionParser.Parse(directions));
@@ -76,6 +98,8 @@ public class Creature
             level++;
         }
     }
-
-    public string Info => $"{Name} [{Level}]";
+    public string Info
+    {
+        get { return $"{Name} [{Level}]"; }
+    }
 }
