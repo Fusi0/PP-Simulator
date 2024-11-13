@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System;
 
+using Simulator.Maps;
 namespace Simulator;
 
 internal class Program
@@ -103,5 +104,73 @@ internal class Program
         Console.WriteLine($"Contains (7,8) - {r5.Contains(point2)}");
         Console.WriteLine($"Contains (-2,-3) - {r5.Contains(point3)}");
         Console.WriteLine($"Contains (-10,-15) - {r5.Contains(point4)}");
+    }
+
+    static void Lab5b()
+    {
+        try
+        {
+            var map1 = new SmallSquareMap(10);
+            Console.WriteLine($"Map {map1.Size}x{map1.Size} was created succesfully");
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        try
+        {
+            var map2 = new SmallSquareMap(4);
+            Console.WriteLine($"Map {map2.Size}x{map2.Size} was created succesfully");
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        try
+        {
+            var map3 = new SmallSquareMap(20);
+            Console.WriteLine($"Map {map3.Size}x{map3.Size} was created succesfully");
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        try
+        {
+            var map4 = new SmallSquareMap(21);
+            Console.WriteLine($"Map {map4.Size}x{map4.Size} was created succesfully");
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        Console.WriteLine("\n---Map 12x12---");
+        var map = new SmallSquareMap(12);
+        Point point1 = new Point(4, 5);
+        Console.WriteLine($"Contains point (4,5) - {map.Exist(point1)}");
+
+        Point point2 = new Point(11, 5);
+        Console.WriteLine($"Contains point (11,5) - {map.Exist(point2)}");
+
+        Point point3 = new Point(5, 14);
+        Console.WriteLine($"Contains point (5,14) - {map.Exist(point3)}");
+
+        Point point4 = new Point(-2, -3);
+        Console.WriteLine($"Contains point (-2,-3) - {map.Exist(point4)}");
+
+        Point point5 = new Point(8, 6);
+        Console.WriteLine($"Contains point (8,6) - {map.Exist(point5)}");
+
+        Console.WriteLine($"Next move up from (4,5) is: {map.Next(point1, Direction.Up)}");
+        Console.WriteLine($"Next move up from (8,6) is: {map.Next(point5, Direction.Up)}");
+
+        Console.WriteLine($"Next move right from (8,6) is: {map.Next(point5, Direction.Right)}");
+
+        Console.WriteLine($"Next move diagonally up from (4,5) is: {map.NextDiagonal(point1, Direction.Up)}");
+        Console.WriteLine($"Next move diagonally up from (8,6) is: {map.NextDiagonal(point5, Direction.Up)}");
+
+        Console.WriteLine($"Next move diagonally down from (4,5) is: {map.NextDiagonal(point1, Direction.Down)}");
+        Console.WriteLine($"Next move diagonally down from (8,6) is: {map.NextDiagonal(point5, Direction.Down)}");
+
     }
 }
