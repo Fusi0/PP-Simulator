@@ -7,24 +7,21 @@ public static class Validator
         return Math.Clamp(value, min, max);
     }
 
-    public static string Shortener(string value, int min, int max, char placeholder = '#')
+    public static string Shortener(string value, int min, int max, char placeholder)
     {
-        var trimmed = value.Trim();
-
-        if (trimmed.Length < min)
+        value = value.Trim();
+        if (value.Length > max)
         {
-            trimmed = trimmed.PadRight(min, placeholder);
+            value = value.Substring(0, max);
+            value = value.Trim();
         }
-        else if (trimmed.Length > max)
+        if (value.Length < min)
         {
-            trimmed = trimmed.Substring(0, max);
+            value = value.PadRight(min, placeholder);
         }
-
-        if (!char.IsUpper(trimmed[0]))
-        {
-            trimmed = char.ToUpper(trimmed[0]) + trimmed.Substring(1);
-        }
-
-        return trimmed;
+        value = value[0].ToString().ToUpper() + value.Substring((1));
+        return value;
     }
 }
+
+
