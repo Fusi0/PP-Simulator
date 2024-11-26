@@ -1,42 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Simulator;
-
-public class DirectionParser
+﻿namespace Simulator
 {
-    public static Direction[] Parse(string dirs)
+    public static class DirectionParser
     {
-        List<Direction> result = new();
-        for (int i = 0; i < dirs.Length; i++)
+        public static List<Direction> Parse(string input)
         {
-            if (dirs[i].ToString().Equals("U", StringComparison.OrdinalIgnoreCase))
+            List<Direction> directions = new List<Direction>();
+            foreach (char c in input.ToUpper())
             {
-                result.Add(Direction.Up);
-            }
-            else if (dirs[i].ToString().Equals("R", StringComparison.OrdinalIgnoreCase))
-            {
-                result.Add(Direction.Right);
-            }
-            else if (dirs[i].ToString().Equals("D", StringComparison.OrdinalIgnoreCase))
-            {
-                result.Add(Direction.Down);
-            }
-            else if (dirs[i].ToString().Equals("L", StringComparison.OrdinalIgnoreCase))
-            {
-                result.Add(Direction.Left);
-            }
-            else
-            {
-                continue;
-            }
+                switch (c)
+                {
+                    case 'U':
+                        directions.Add(Direction.Up);
+                        break;
+                    case 'R':
+                        directions.Add(Direction.Right);
+                        break;
+                    case 'D':
+                        directions.Add(Direction.Down);
+                        break;
+                    case 'L':
+                        directions.Add(Direction.Left);
+                        break;
+                    default:
 
+                        break;
 
+                }
+
+            }
+            return directions;
         }
-        return result.ToArray();
     }
+
 }

@@ -1,176 +1,144 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System;
-
+﻿using System.Security.Cryptography.X509Certificates;
 using Simulator.Maps;
+
 namespace Simulator;
 
 internal class Program
 {
     static void Main(string[] args)
     {
-
-        //Console.WriteLine("Starting Simulator!\n");
-        //Lab4a();
-        //Creature c = new Elf("Elandor", 5, 3);
-        //Console.WriteLine(c);
-        //Lab4b();
-
+        Console.WriteLine("Starting Simulator!\n");
         Lab5a();
-    }
-    static void Lab4a()
-    {
-        Console.WriteLine("HUNT TEST\n");
-        var o = new Orc() { Name = "Gorbag", Rage = 7 };
-        o.SayHi();
-        for (int i = 0; i < 10; i++)
-        {
-            o.Hunt();
-            o.SayHi();
-        }
-
-        Console.WriteLine("\nSING TEST\n");
-        var e = new Elf("Legolas", agility: 2);
-        e.SayHi();
-        for (int i = 0; i < 10; i++)
-        {
-            e.Sing();
-            e.SayHi();
-        }
-
-        Console.WriteLine("\nPOWER TEST\n");
-        Creature[] creatures = {
-        o,
-        e,
-        new Orc("Morgash", 3, 8),
-        new Elf("Elandor", 5, 3)
-        };
-        foreach (Creature creature in creatures)
-        {
-            Console.WriteLine($"{creature.Name,-15}: {creature.Power}");
-        }
-    }
-    static void Lab4b()
-    {
-        object[] myObjects = {
-        new Animals() { Description = "dogs"},
-        new Birds { Description = "  eagles ", Size = 10 },
-        new Elf("e", 15, -3),
-        new Orc("morgash", 6, 4)
-    };
-        Console.WriteLine("\nMy objects:");
-        foreach (var o in myObjects) Console.WriteLine(o);
-        /*
-            My objects:
-            ANIMALS: Dogs <3>
-            BIRDS: Eagles (fly+) <10>
-            ELF: E## [10][0]
-            ORC: Morgash [6][4]
-        */
+        Lab5b();
+        Console.ReadLine();
     }
 
     static void Lab5a()
     {
-        Point p = new(10, 25);
-        Rectangle r1 = new Rectangle(2, 2, 6, 7);
-        Console.WriteLine($"Rectangle: {r1}");
+        Console.WriteLine("\n[TEST] CREATING RECTANGLES WITH LOOSE COORDINATES");
+        Rectangle rect1 = new Rectangle(10, 5, 20, 15);
+        Console.WriteLine("Created rectangle with coordinates in right order: " + rect1);
 
-        Rectangle r2 = new(4, 5, 2, 3);
-        Console.WriteLine($"Rectangle: {r2}");
+        Rectangle rect2 = new Rectangle(20, 15, 10, 5);
+        Console.WriteLine("Created rectangle with coordinates in wrong order: " + rect2);
 
         try
         {
-            Rectangle r3 = new Rectangle(0, 0, 2, 6);
-            Console.WriteLine($"Wrong rectangle: {r3}");
+            Rectangle rect3 = new Rectangle(10, 5, 10, 5);
+            Console.WriteLine("Created rectangle: " + rect3);
         }
         catch (ArgumentException ex)
         {
-            Console.WriteLine(ex.Message);
+            Console.WriteLine("Exception caught: " + ex.Message);
         }
 
-        Point point1 = new Point(4, 4);
-        Point point2 = new Point(7, 8);
-        Point point3 = new Point(-2, -3);
-        Point point4 = new Point(-10, -15);
+        // Part 2 of the given exercise (SmallSquareMap) checks the minimum size,
+        //try
+        //{
+        //    Rectangle rect4 = new Rectangle(1, 1, 2, 2);
+        //    Console.WriteLine("Created rectangle: " + rect4);
+        //}
+        //catch (ArgumentException ex)
+        //{
+        //    Console.WriteLine("Exception caught: " + ex.Message);
+        //}
 
-        Rectangle r4 = new Rectangle(point1, point2);
-        Console.WriteLine($"Rectangle: {r4}");
 
-        Console.WriteLine("-----");
+        Console.WriteLine("\n[TEST] CREATING RECTANGLES WITH POINTS");
+        Point p1 = new Point(10, 5);
+        Point p2 = new Point(20, 15);
+        Rectangle rect5 = new Rectangle(p1, p2);
+        Console.WriteLine("Created rectangle with points in right order: " + rect5);
 
-        Rectangle r5 = new Rectangle(-4, -6, 6, 8);
-        Console.WriteLine($"Rectangle: {r5}");
+        Rectangle rect6 = new Rectangle(p2, p1);
+        Console.WriteLine("Created rectangle with points in wrong order: " + rect6);
 
-        Console.WriteLine($"Contains (4,4) - {r5.Contains(point1)}");
-        Console.WriteLine($"Contains (7,8) - {r5.Contains(point2)}");
-        Console.WriteLine($"Contains (-2,-3) - {r5.Contains(point3)}");
-        Console.WriteLine($"Contains (-10,-15) - {r5.Contains(point4)}");
+        try
+        {
+            Rectangle rect7 = new Rectangle(p1, p1);
+            Console.WriteLine("Created rectangle: " + rect7);
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine("Exception caught: " + ex.Message);
+        }
+
+        // Part 2 of the given exercise (SmallSquareMap) checks the minimum size,
+        //Point p3 = new Point(1, 1);
+        //Point p4 = new Point(2, 2);
+        //try
+        //{
+        //    Rectangle rect7 = new Rectangle(p3, p4);
+        //    Console.WriteLine("Created rectangle: " + rect7);
+        //}
+        //catch (ArgumentException ex)
+        //{
+        //    Console.WriteLine("Exception caught: " + ex.Message);
+        //}
+
+        Point p5 = new Point(25, 25);
+        Console.WriteLine($"Rectangle {rect1} contains point {p5}: {rect1.Contains(p5)}");
+
+        Point p6 = new Point(10, 10);
+        Console.WriteLine($"Rectangle {rect1} contains point {p6}: {rect1.Contains(p6)}");
     }
+
 
     static void Lab5b()
     {
+        int size = 12;
+        Console.WriteLine($"\n[TEST] CREATING SMALLSQUAREMAP WITH SIZE {size}x{size}");
+        SmallSquareMap map = new SmallSquareMap(size);
+
+
+        Console.WriteLine($"Exist method:");
+        Point p1 = new Point(-1, -1);
+        Console.WriteLine($"Does point {p1} exist: {map.Exist(p1)}");
+        Point p2 = new Point(6, 6);
+        Console.WriteLine($"Does point {p2} exist: {map.Exist(p2)}");
+        Point p3 = new Point(11, 11);
+        Console.WriteLine($"Does point {p3} exist: {map.Exist(p3)}");
+        Point p4 = new Point(12, 12);
+        Console.WriteLine($"Does point {p4} exist: {map.Exist(p4)}");
+
+
+        Console.WriteLine("\nNext method:");
+        foreach (Direction direction in Enum.GetValues(typeof(Direction)))
+        {
+            Console.WriteLine($"Next point from {p2} in '{direction}' direction: {map.Next(p2, direction)}");
+        }
+
+        Console.WriteLine($"Next point from {p3} in 'Up' direction (edge): {map.Next(p3, Direction.Up)}");
+        Console.WriteLine($"Next point from {p3} in 'Right' direction (edge): {map.Next(p3, Direction.Right)}");
+
+
+        Console.WriteLine("\nNextDiagonal method:");
+        foreach (Direction direction in Enum.GetValues(typeof(Direction)))
+        {
+            Console.WriteLine($"Next diagonal point from {p2} in '{direction}' direction: {map.NextDiagonal(p2, direction)}");
+        }
+
+        Console.WriteLine($"Next diagonal point from {p3} in 'Up' direction (edge): {map.NextDiagonal(p3, Direction.Up)}");
+        Console.WriteLine($"Next diagonal point from {p3} in 'Right' direction (edge): {map.NextDiagonal(p3, Direction.Right)}");
+
+
+        Console.WriteLine("\nSmallSquareMap creation:");
         try
         {
-            var map1 = new SmallSquareMap(10);
-            Console.WriteLine($"Map {map1.Size}x{map1.Size} was created succesfully");
+            SmallSquareMap map1 = new SmallSquareMap(4);
         }
-        catch (ArgumentException ex)
+        catch (ArgumentOutOfRangeException ex)
         {
-            Console.WriteLine(ex.Message);
+            Console.WriteLine("Exception caught: " + ex.Message);
         }
+
         try
         {
-            var map2 = new SmallSquareMap(4);
-            Console.WriteLine($"Map {map2.Size}x{map2.Size} was created succesfully");
+            SmallSquareMap map2 = new SmallSquareMap(21);
         }
-        catch (ArgumentException ex)
+        catch (ArgumentOutOfRangeException ex)
         {
-            Console.WriteLine(ex.Message);
+            Console.WriteLine("Exception caught: " + ex.Message);
         }
-        try
-        {
-            var map3 = new SmallSquareMap(20);
-            Console.WriteLine($"Map {map3.Size}x{map3.Size} was created succesfully");
-        }
-        catch (ArgumentException ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-        try
-        {
-            var map4 = new SmallSquareMap(21);
-            Console.WriteLine($"Map {map4.Size}x{map4.Size} was created succesfully");
-        }
-        catch (ArgumentException ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-        Console.WriteLine("\n---Map 12x12---");
-        var map = new SmallSquareMap(12);
-        Point point1 = new Point(4, 5);
-        Console.WriteLine($"Contains point (4,5) - {map.Exist(point1)}");
-
-        Point point2 = new Point(11, 5);
-        Console.WriteLine($"Contains point (11,5) - {map.Exist(point2)}");
-
-        Point point3 = new Point(5, 14);
-        Console.WriteLine($"Contains point (5,14) - {map.Exist(point3)}");
-
-        Point point4 = new Point(-2, -3);
-        Console.WriteLine($"Contains point (-2,-3) - {map.Exist(point4)}");
-
-        Point point5 = new Point(8, 6);
-        Console.WriteLine($"Contains point (8,6) - {map.Exist(point5)}");
-
-        Console.WriteLine($"Next move up from (4,5) is: {map.Next(point1, Direction.Up)}");
-        Console.WriteLine($"Next move up from (8,6) is: {map.Next(point5, Direction.Up)}");
-
-        Console.WriteLine($"Next move right from (8,6) is: {map.Next(point5, Direction.Right)}");
-
-        Console.WriteLine($"Next move diagonally up from (4,5) is: {map.NextDiagonal(point1, Direction.Up)}");
-        Console.WriteLine($"Next move diagonally up from (8,6) is: {map.NextDiagonal(point5, Direction.Up)}");
-
-        Console.WriteLine($"Next move diagonally down from (4,5) is: {map.NextDiagonal(point1, Direction.Down)}");
-        Console.WriteLine($"Next move diagonally down from (8,6) is: {map.NextDiagonal(point5, Direction.Down)}");
-
     }
 }

@@ -1,19 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Simulator;
-
-public class Animals
+﻿namespace Simulator
 {
-    private string description = "Unknown";
-    public required string Description
+    public class Animals
     {
-        get => description;
-        init => description = Validator.Shortener(value, 3, 15);
+        private string description = "Unknown";
+        public required string Description
+        {
+            get { return description; }
+            init
+            {
+                description = Validator.Shortener(value, 3, 15, '#');
+            }
+        }
+        public uint Size { get; set; } = 3;
+        public override string ToString()
+        {
+            return $"{GetType().Name.ToUpper()}: {Info}";
+        }
+        public virtual string Info
+        {
+            get { return $"{Description} <{Size}>"; }
+        }
     }
-    public virtual string Info => $"{Description} <{Size}>";
-    public override string ToString()
-    {
-        return $"{GetType().Name.ToUpper()}: {Info}";
-    }
-    public uint Size { get; set; } = 3;
+
 }

@@ -1,46 +1,55 @@
-﻿namespace Simulator.Maps;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-public class SmallTorusMap : Map
+namespace Simulator.Maps
 {
-    public int Size { get; }
-    private Rectangle boundaries;
-
-    public SmallTorusMap(int size)
+    public class SmallTorusMap : SmallMap
     {
-        if (size < 5 || size > 20)
-            throw new ArgumentOutOfRangeException(nameof(size), "Rozmiar mapy musi być pomiędzy 5 a 20.");
+        private readonly int sizeX;
+        private readonly int sizeY;
 
-        Size = size;
-        boundaries = new Rectangle(0, 0, Size - 1, Size - 1);
-    }
-    public override bool Exist(Point p)
-    {
-        return boundaries.Contains(p);
-    }
-
-    public override Point Next(Point p, Direction d)
-    {
-        Point nextPoint = p.Next(d);
-        return d switch
+        public SmallTorusMap(int sizeX, int sizeY) : base(sizeX, sizeY)
         {
-            Direction.Up => Exist(nextPoint) ? nextPoint : new Point(p.X, 0),
-            Direction.Right => Exist(nextPoint) ? nextPoint : new Point(0, p.Y),
-            Direction.Down => Exist(nextPoint) ? nextPoint : new Point(p.X, Size - 1),
-            Direction.Left => Exist(nextPoint) ? nextPoint : new Point(Size - 1, p.Y),
-            _ => default,
-        };
-    }
+            this.sizeX = sizeX;
+            this.sizeY = sizeY;
+        }
 
-    public override Point NextDiagonal(Point p, Direction d)
-    {
-        Point nextPoint = p.NextDiagonal(d);
-        return d switch
+        public override Point Next(Point p, Direction d)
         {
-            Direction.Up => Exist(nextPoint) ? nextPoint : new Point((p.X + 1) % Size, (p.Y + 1) % Size),
-            Direction.Right => Exist(nextPoint) ? nextPoint : new Point((p.X + 1) % Size, (p.Y - 1 + Size) % Size),
-            Direction.Down => Exist(nextPoint) ? nextPoint : new Point((p.X - 1 + Size) % Size, (p.Y - 1 + Size) % Size),
-            Direction.Left => Exist(nextPoint) ? nextPoint : new Point((p.X - 1 + Size) % Size, (p.Y + 1) % Size),
-            _ => default,
-        };
+            switch (d)
+            {
+                case Direction.Up:
+                    return new Point(p.X, (p.Y + 1) % sizeY);
+                case Direction.Down:
+                    return new Point(p.X, (p.Y - 1 + sizeY) % sizeY);
+                case Direction.Left:
+                    return new Point((p.X - 1 + sizeX) % sizeX, p.Y);
+                case Direction.Right:
+                    return new Point((p.X + 1) % sizeX, p.Y);
+                default:
+                    throw new ArgumentException("Nieznany kierunek");
+            }
+        }
+
+        public override Point NextDiagonal(Point p, Direction d)
+        {
+            switch (d)
+            {
+                case Direction.Up:
+                    return new Point((p.X + 1) % sizeX, (p.Y + 1) % sizeY);
+                case Direction.Down:
+                    return new Point((p.X - 1 + sizeX) % sizeX, (p.Y - 1 + sizeY) % sizeY);
+                case Direction.Left:
+                    return new Point((p.X - 1 + sizeX) % sizeX, (p.Y + 1) % sizeY);
+                case Direction.Right:
+                    return new Point((p.X + 1) % sizeX, (p.Y - 1 + sizeY) % sizeY);
+                default:
+                    throw new ArgumentException("Nieznany kierunek");
+            }
+        }
     }
 }
