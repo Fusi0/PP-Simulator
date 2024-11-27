@@ -42,7 +42,21 @@ public class Simulation
     /// <summary>
     /// Lowercase name of direction which will be used in current turn.
     /// </summary>
-    public string CurrentMoveName => Moves[turnIndex % Moves.Length].ToString().ToLower();
+    public string CurrentMoveName
+    {
+        get
+        {
+            char move = char.ToLower(Moves[turnIndex]);
+            switch (move)
+            {
+                case 'u': return "up";
+                case 'r': return "right";
+                case 'd': return "down";
+                case 'l': return "left";
+                default: return "";
+            }
+        }
+    }
 
     private int turnIndex = 0;
 
@@ -54,18 +68,23 @@ public class Simulation
     /// number of starting positions.
     /// </summary>
     public Simulation(Map map, List<Creature> creatures,
-        List<Point> positions, string moves)
+            List<Point> positions, string moves)
     {
         if (creatures.Count == 0)
+        {
             throw new ArgumentException("The creatures list cannot be empty.");
+        }
 
         if (creatures.Count != positions.Count)
+        {
             throw new ArgumentException("The number of creatures must match the number of starting positions.");
+        }
 
         Map = map;
         Creatures = creatures;
         Positions = positions;
         Moves = moves;
+
         for (int i = 0; i < creatures.Count; i++)
         {
             var creature = creatures[i];
@@ -75,12 +94,12 @@ public class Simulation
             {
                 throw new ArgumentException($"Position {position} is outside the bounds of the map.");
             }
-
+            creature.SetMap(map, position);
             map.Add(creature, position);
-
         }
-
     }
+
+
 
     /// <summary>
     /// Makes one move of current creature in current direction.
@@ -88,7 +107,6 @@ public class Simulation
     /// </summary>
     public void Turn()
     {
-
         if (Finished)
         {
             throw new InvalidOperationException("The simulation is already finished.");
@@ -100,28 +118,18 @@ public class Simulation
             return;
         }
 
-        char currentMoveChar = Moves[0];
+        char moveChar = Moves[turnIndex];
+        var directions = DirectionParser.Parse(moveChar.ToString());
 
-        Moves = Moves.Substring(1);
-
-        var directions = DirectionParser.Parse(currentMoveChar.ToString());
-        if (directions == null || directions.Count == 0)
+        if (directions != null && directions.Count > 0)
         {
-            return;
-        }
-
-
-        var direction = directions[0];
-        if (CurrentCreature != null)
-        {
+            var direction = directions[0];
             CurrentCreature.Go(direction);
         }
-        else
-        {
-            throw new InvalidOperationException("Current creature is null.");
-        }
 
-        if (Moves.Length == 0)
+        turnIndex++;
+
+        if (turnIndex >= Moves.Length)
         {
             Finished = true;
         }
