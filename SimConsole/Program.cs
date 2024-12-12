@@ -20,6 +20,7 @@ class Program
         string moves = "rduldrudurdludrdd";
 
         Simulation simulation = new(map, mappables, points, moves);
+        SimulationHistory history = new(simulation);
         MapVisualizer mapVisualizer = new(simulation.Map);
 
         while (!simulation.Finished)
@@ -30,9 +31,25 @@ class Program
             Console.ReadKey(true);
             //Console.Write($"{simulation.CurrentMappable.Info} {simulation.CurrentMappable.Position} goes {simulation.CurrentMoveName}\n");
             simulation.Turn();
+            history.SaveState();
             Console.Clear();
         }
         mapVisualizer.Draw();
         Console.WriteLine("\nSimulation finished!");
+
+        foreach (int turn in new[] { 5, 10, 15, 20 })
+        {
+            try
+            {
+                var state = history.GetStateAtTurn(turn);
+                Console.WriteLine($"Turn {turn}:");
+                mapVisualizer.Draw(state);
+                Console.WriteLine();
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                Console.WriteLine($"Turn {turn} is out of range.");
+            }
+        }
     }
 }
