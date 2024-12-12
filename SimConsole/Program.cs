@@ -9,10 +9,15 @@ class Program
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-        SmallTorusMap map = new(8, 6);
         List<IMappable> mappables = new() { new Orc("Gorbag"), new Elf("Elandor"), new Animals("Rabbits", 8), new Birds("Eagle", 14, true), new Birds("Ostrich", 2, false) };
+
+        //SmallTorusMap map = new(8, 6);
+        //List<Point> points = new() { new(2, 2), new(3, 1), new(1, 1), new(2, 5), new(3, 3) };
+        //string moves = "xuldrxrdlxuxdruldxurd";
+        
+        BigBounceMap map = new(8, 6);
         List<Point> points = new() { new(2, 2), new(3, 1), new(1, 1), new(2, 5), new(3, 3) };
-        string moves = "xuldrxrdlxuxdruldxurd";
+        string moves = "rduldrudurdludrdd";
 
         Simulation simulation = new(map, mappables, points, moves);
         MapVisualizer mapVisualizer = new(simulation.Map);
