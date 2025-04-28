@@ -1,9 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System;
-
-using Simulator.Maps;
+﻿using Simulator.Maps;
 namespace Simulator;
-
 internal class Program
 {
     static void Main(string[] args)
